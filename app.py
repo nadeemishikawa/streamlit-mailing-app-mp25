@@ -129,8 +129,12 @@ if st.session_state.credentials:
 
                     # 送信結果を表示
                     status.update(label="📩 送信完了", state="complete", expanded=False)
-                    st.success(f"✅ 成功: {success_count}件")
-                    st.error(f"❌ 失敗: {error_count}件") if error_count > 0 else None
+                    
+                    # ✅ 「〇〇件送信完了」に修正
+                    st.success(f"✅ {success_count}件送信完了")
+                    
+                    if error_count > 0:
+                        st.error(f"❌ 失敗: {error_count}件")
 
                     if errors:
                         with st.expander("📋 エラー詳細"):
