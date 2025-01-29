@@ -60,8 +60,9 @@ if st.session_state.credentials is None:
     flow.redirect_uri = REDIRECT_URI
     auth_url, _ = flow.authorization_url(prompt="consent")
 
-    # 🚀 `iframe` を使わず、新しいタブで開く
-    st.markdown(f'<a href="{auth_url}" target="_blank">🔗 Googleにログイン</a>', unsafe_allow_html=True)
+    # 🚀 `st.button()` を使用してリダイレクト処理
+    if st.button("🔑 Googleにログイン"):
+        st.query_params["redirect"] = auth_url
 
 # 3️⃣ 認証完了後、メール送信画面を表示
 if st.session_state.credentials:
