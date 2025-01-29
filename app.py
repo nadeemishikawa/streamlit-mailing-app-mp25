@@ -1,21 +1,30 @@
 import streamlit as st
-import pandas as pd
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import base64
+import json
 from email.mime.text import MIMEText
+import pandas as pd
 import os
 import time
-
-# OAuth 2.0 クライアントIDのJSONファイル
-CLIENT_SECRETS_FILE = "client_secret.json"
 
 # Gmail APIのスコープ
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-# Google認証のリダイレクトURL (Streamlitのポートに合わせる)
-REDIRECT_URI = "https://bulkmailer-mp.streamlit.app/"
+# Streamlit Cloud のSecretsからOAuth情報を取得
+OAUTH_CONFIG = {
+    "web": {
+        "client_id": st.secrets["oauth"]["client_id"],
+        "client_secret": st.secrets["oauth"]["client_secret"],
+        "redirect_uris": [st.secrets["oauth"]["redirect_uri"]],
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token"
+    }
+}
+
+# Google認証のリダイレクトURL (Streamlit CloudのURL)
+REDIRECT_URI = st.secrets["oauth"]["redirect_uri"]
 
 # セッション変数の初期化
 if "credentials" not in st.session_state:
@@ -30,9 +39,7 @@ auth_code = query_params.get("code")
 # 1️⃣ 認証コードがURLにある場合、自動で処理
 if auth_code and st.session_state.credentials is None:
     try:
-        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-            CLIENT_SECRETS_FILE, SCOPES
-        )
+        flow = google_auth_oauthlib.flow.Flow.from_client_config(OAUTH_CONFIG, SCOPES)
         flow.redirect_uri = REDIRECT_URI
         flow.fetch_token(code=auth_code)
 
@@ -49,9 +56,7 @@ if auth_code and st.session_state.credentials is None:
 if st.session_state.credentials is None:
     st.write("Googleログインが必要です")
     if st.button("Googleにログイン"):
-        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-            CLIENT_SECRETS_FILE, SCOPES
-        )
+        flow = google_auth_oauthlib.flow.Flow.from_client_config(OAUTH_CONFIG, SCOPES)
         flow.redirect_uri = REDIRECT_URI
         auth_url, _ = flow.authorization_url(prompt="consent")
 
