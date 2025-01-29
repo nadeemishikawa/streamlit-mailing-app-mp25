@@ -12,7 +12,7 @@ import time
 # Gmail APIのスコープ
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-# Streamlit Cloud のSecretsからOAuth情報を取得
+# Streamlit Cloud の Secrets から OAuth 設定を取得
 OAUTH_CONFIG = {
     "web": {
         "client_id": st.secrets["oauth"]["client_id"],
@@ -55,13 +55,13 @@ if auth_code and st.session_state.credentials is None:
 # 2️⃣ 認証していない場合、Googleログインボタンを表示
 if st.session_state.credentials is None:
     st.write("Googleログインが必要です")
-    if st.button("Googleにログイン"):
-        flow = google_auth_oauthlib.flow.Flow.from_client_config(OAUTH_CONFIG, SCOPES)
-        flow.redirect_uri = REDIRECT_URI
-        auth_url, _ = flow.authorization_url(prompt="consent")
 
-        # Google認証ページへリダイレクト
-        st.markdown(f'<meta http-equiv="refresh" content="0;URL={auth_url}">', unsafe_allow_html=True)
+    flow = google_auth_oauthlib.flow.Flow.from_client_config(OAUTH_CONFIG, SCOPES)
+    flow.redirect_uri = REDIRECT_URI
+    auth_url, _ = flow.authorization_url(prompt="consent")
+
+    # 🚀 `iframe` を使わず、新しいタブで開く
+    st.markdown(f'<a href="{auth_url}" target="_blank">🔗 Googleにログイン</a>', unsafe_allow_html=True)
 
 # 3️⃣ 認証完了後、メール送信画面を表示
 if st.session_state.credentials:
