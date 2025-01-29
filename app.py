@@ -15,7 +15,7 @@ CLIENT_SECRETS_FILE = "client_secret.json"
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 # Google認証のリダイレクトURL (Streamlitのポートに合わせる)
-REDIRECT_URI = "http://localhost:8502"
+REDIRECT_URI = "https://bulkmailer-mp.streamlit.app/"
 
 # セッション変数の初期化
 if "credentials" not in st.session_state:
