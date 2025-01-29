@@ -60,9 +60,27 @@ if st.session_state.credentials is None:
     flow.redirect_uri = REDIRECT_URI
     auth_url, _ = flow.authorization_url(prompt="consent")
 
-    # 🚀 `st.button()` を使用してリダイレクト処理
-    if st.button("🔑 Googleにログイン"):
-        st.query_params["redirect"] = auth_url
+    # ボタン風デザイン用の HTML + CSS
+    button_html = f"""
+    <style>
+        .login-button {{
+            display: inline-block;
+            padding: 0.5em 1em;
+            color: #ffffff !important;
+            background-color: #007bff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }}
+        .login-button:hover {{
+            background-color: #0056b3;
+        }}
+    </style>
+    <a class="login-button" href="{auth_url}" target="_blank">🔗 Googleにログイン</a>
+    """
+
+    st.markdown(button_html, unsafe_allow_html=True)
 
 # 3️⃣ 認証完了後、メール送信画面を表示
 if st.session_state.credentials:
