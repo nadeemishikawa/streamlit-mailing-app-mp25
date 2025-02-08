@@ -130,7 +130,7 @@ if st.session_state.credentials:
                                         attachment_part = MIMEBase(main_type, sub_type)
                                         attachment_part.set_payload(file_data)
                                         encoders.encode_base64(attachment_part)
-                                        attachment_part.add_header("Content-Disposition", f"attachment; filename={attach_name}")
+                                        attachment_part.add_header("Content-Disposition", f"attachment; filename={os.path.basename(attach_name)}")
                                         msg.attach(attachment_part)
                                     else:
                                         st.warning(f"※ 行 {index+1}: 指定された添付ファイル '{attach_name}' がアップロードされていません。")
